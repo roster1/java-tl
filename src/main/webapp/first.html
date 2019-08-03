@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>formInstance</title>
+</head>
+<script>
+        function  check(){
+            var x = document.forms["myform"]["nform"].value;
+            if(x == ""){
+                alert("姓名不能为空");
+                return false;
+            }
+        }
+</script>
+<body>
+    <form name="myform" action="https://www.baidu.com" onsubmit="return check()"
+    method="post">
+        姓名：<input class="cla" type="text" name="nform" required/><input type="submit" value="提交"/>
+    </form>
+</body>
+</html>

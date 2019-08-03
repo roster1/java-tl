@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.db.sys.dao.SysUserDao">
+	<select id="getUserCountByDeptId" parameterType="int" resultType="int">
+		select count(*)
+		from sys_users
+		where deptId=#{deptId}
+	</select>
+
+	<!-- 用户页面数据展示
+	1.查询用户用户的记录条数
+	2.根据分页信息查询分页数据
+		a.基于部门id关联查询到部门表中查询sysDept放在map中
+		-->
+	<select id="getRowCount" resultType="int">
+		select count(*)
+		from sys_users
+		<include refid="queryWhereId"/>
+	</select>
+	<resultMap id="sysUserMap" type="com.db.sys.vo.SysUserDeptVo">
+		<association property="sysDept" column="deptId" select="com.db.sys.dao.SysDeptDao.findById"/>
+	</resultMap>
+	<select id="findPageObjects" resultMap="sysUserMap">
+		select *
+		from sys_users
+		<include refid="queryWhereId"/>
+		limit #{startIndex},#{pageSize}
+	</select>
+	<sql id="queryWhereId">
+		<where>
+			<if test="username!=null and username!=''">
+				username like concat("%",#{username},"%")
+			</if>
+		</where>
+	</sql>
+
+	<!--实现用户的禁用启用-->
+	<update id="validById">
+		update
+		sys_users
+		set valid = #{valid},modifiedUser = #{modifiedUser}
+		where id = #{id}
+	</update>
+
+	<!--新添加的用户入库 ...useGeneratedKeys="true" keyProperty="id"-->
+		<insert id="insertObject"
+				parameterType="com.db.sys.entity.SysUser"
+				useGeneratedKeys="true"
+				keyProperty="id">
+      insert into sys_users
+      (username,password,deptId,email,mobile,salt,valid,
+      createdTime,modifiedTime,createdUser,modifiedUser)
+      values
+    (#{username},#{password},#{deptId},#{email},#{mobile},#{salt},#{valid},
+      now(),now(),#{createdUser},#{modifiedUser})
+   </insert>
+</mapper>

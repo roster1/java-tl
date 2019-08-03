@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.db.sys.dao.SysMenuDao">
+
+	<!--查询sys_menus中的Node节点-->
+	<select id="findZtreeMenuNodes" resultType="com.db.common.vo.Node">
+		select id,name,parentId
+		from sys_menus
+	</select>
+	<select id="findObjects" resultType="map">
+
+		<!-- 方案1 select c.*,p.name parentName from sys_menus c left join sys_menus 
+			p on c.parentId=p.id -->
+		<!-- 方案2 -->
+		select c.*,(
+		select p.name
+		from sys_menus p
+		where c.parentId=p.id
+		) parentName
+		from sys_menus c
+	</select>
+	<!-- 根据菜单id统计子菜单 -->
+	<select id="getChildCount" parameterType="int" resultType="int">
+		select count(*)
+		from
+		sys_menus
+		where parentId = #{id}
+	</select>
+	<!-- 根据id删除菜单 -->
+	<delete id="deleteObject" parameterType="int">
+		delete
+		from sys_menus
+		where id = #{id}
+	</delete>
+	<!-- 删除角色，菜单的关系数据 -->
+	<delete id="deleteObjectsByMenuId" parameterType="int">
+		delete
+		from sys_role_menus
+		where menuId = #{menuId}
+	</delete>
+
+	<!-- 保存新添加的菜单信息 -->
+	<insert id="insertObject" parameterType="com.db.sys.entity.SysMenu"><!-- 必须写类全名 -->
+		insert into sys_menus
+		(name,url,type,sort,note,parentId,permission,
+		createdTime,modifiedTime,createdUser,modifiedUser)
+		values
+		(#{name},#{url},#{type},#{sort},#{note},#{parentId},#{permission},
+		now(),now(),#{createdUser},#{modifiedUser})
+	</insert>
+
+	<!--将更改的菜单信息入库-->
+	<update id="updateObject" parameterType="com.db.sys.entity.SysMenu">
+		update sys_menus
+		set
+           name=#{name},
+           type=#{type},
+           sort=#{sort},
+           url=#{url},
+           parentId=#{parentId},
+           permission=#{permission},
+           modifiedUser=#{modifiedUser},
+           modifiedTime=now()
+        where id=#{id}
+	</update>
+</mapper>
+
+
+
+
+
+
+

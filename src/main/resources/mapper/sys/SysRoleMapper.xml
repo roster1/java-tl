@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.db.sys.dao.SysRoleDao">
+	<!--页面加载分页数据数据
+		查询总记录数
+	-->
+	<sql id="queryWhereId">
+		<where>
+			<if test="name!=null and name!=''">
+				name like concat("%",#{name},"%")
+			</if>
+		</where>
+	</sql>
+	<select id="findPageObjects" resultType="com.db.sys.entity.SysRole">
+		select *
+		from sys_roles
+		<include refid="queryWhereId"/>
+		order by createdTime desc
+		limit #{startIndex},#{pageSize}
+	</select>
+	<select id="getRowCount" resultType="int">
+		select count(*)
+		from sys_roles
+		<include refid="queryWhereId"/>
+	</select>
+
+ 	<!-- 删除角色，菜单的关系数据 -->
+ 	<delete id="deleteObject" parameterType="int">
+ 		delete
+ 		from sys_roles
+ 		where id = #{id}
+ 	</delete>
+
+	<!--添加角色时,保存角色信息 useGeneratedKeys="true" 把新增加的主键赋值到自己定义的  keyProperty="id"(id)中
+	在Service层 entity.getId()为null 虽然数据能插入但是会报null,  ===>加入这两个参数才不会出现空指针异常
+	注意:useGeneratedKeys 取值范围true|false 默认值是：false。 含义：设置是否使用JDBC的getGenereatedKeys方法获取主键并
+	赋值到keyProperty设置的领域模型属性中-->
+	<insert id="insertObject" parameterType="com.db.sys.entity.SysRole"
+			useGeneratedKeys="true" keyProperty="id">
+		insert into
+		sys_roles
+		(id,name,note,createdTime,modifiedTime,
+         createdUser,modifiedUser)
+         values
+         (null,#{name},#{note},now(),now(),
+         #{createdUser},#{modifiedUser})
+	</insert>
+
+	<!--.....修改角色信息时,将查询的结果放在SysRoleMenuVo的map中
+	需要到角色和菜单的中间表中查找menuIds-->
+	<resultMap id="sysRoleMenuVo" type="com.db.sys.vo.SysRoleMenuVo">
+		<collection column="id" property="menuIds" select="com.db.sys.dao.SysRoleMenuDao.findMenuIdsByRoleId"/>
+	</resultMap>
+	<select id="findObjectById" resultMap="sysRoleMenuVo">
+		select id,name,note
+		from sys_roles
+		where id=#{id}
+	</select>
+</mapper>
+
+
+
+
+
+
+

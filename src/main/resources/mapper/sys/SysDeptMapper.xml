@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.db.sys.dao.SysDeptDao">
+	<!--查询部门数据-->
+	<select id="findObjects" resultType="map">
+		select c.*,(select p.name from sys_depts p where c.parentId = p.id)parentName
+		from sys_depts c
+	</select>
+
+	<!--根据id查询是否有子元素-->
+	<select id="getChildCount" parameterType="int" resultType="int">
+		select count(*)
+		from sys_depts
+		where parentId=#{id}
+	</select>
+
+	<!--根据id删除部门数据-->
+	<delete id="deleteObject" parameterType="int">
+		delete
+		from sys_depts
+		where id=#{id}
+	</delete>
+
+	<!--查找Node数据-->
+	<select id="findZtreeDeptNodes" resultType="com.db.common.vo.Node">
+		select id,name,parentId
+		from sys_depts
+	</select>
+
+	<!--添加新的部门-->
+	<insert id="insertObject" parameterType="com.db.sys.entity.SysDept">
+		insert into
+		sys_depts
+		(name,sort,note,parentId,createdTime,modifiedTime,createdUser,modifiedUser)
+         values
+		(#{name},#{sort},#{note},#{parentId},now(),now(),#{createdUser},#{modifiedUser})
+	</insert>
+
+	<!--修改部门信息-->
+	<update id="updateObject" parameterType="com.db.sys.entity.SysDept">
+		update sys_depts
+		set
+           name=#{name},
+           note=#{note},
+           sort=#{sort},
+           parentId=#{parentId},
+           modifiedUser=#{modifiedUser},
+           modifiedTime=now()
+        where id=#{id}
+	</update>
+
+	<!--查询用户数据时,要将查询的部门信息传递给sysUserMap-->
+	<select id="findById"
+			resultType="com.db.sys.entity.SysDept">
+           select *
+           from sys_depts
+           where id=#{id}
+    </select>
+</mapper>
