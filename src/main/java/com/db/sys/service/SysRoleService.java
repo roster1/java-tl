@@ -1,8 +1,11 @@
 package com.db.sys.service;
 
+import com.db.common.vo.CheckBox;
 import com.db.sys.entity.SysRole;
 import com.db.sys.vo.PageObject;
 import com.db.sys.vo.SysRoleMenuVo;
+
+import java.util.List;
 
 public interface SysRoleService {
     /**
@@ -42,4 +45,10 @@ public interface SysRoleService {
      * @return
      */
     SysRoleMenuVo findObjectById(Integer id);
+    /*修改角色后,将修改的角色信息保存*/
+    int updateObject(SysRole entity,Integer[] menuIds);
+
+    /*--------*/
+    /**添加用户时,要提供的可选择的角色*/
+    List<CheckBox> findObjects();
 }

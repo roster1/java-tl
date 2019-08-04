@@ -1,5 +1,6 @@
 package com.db.sys.dao;
 
+import com.db.common.vo.CheckBox;
 import com.db.sys.entity.SysRole;
 import com.db.sys.vo.SysRoleMenuVo;
 import org.apache.ibatis.annotations.Param;
@@ -26,10 +27,10 @@ public interface SysRoleDao {
 
     /**
      * 根据id删除角色
-     * @param id
+     * @param roleId
      * @return
      */
-    int deleteObject(Integer id);
+    int deleteObjectsByRoleId(Integer roleId);
 
     /**
      * 添加角色时,保存角色信息
@@ -46,4 +47,13 @@ public interface SysRoleDao {
      * @return
      */
     SysRoleMenuVo findObjectById(Integer id);
+    /*然后根据要展示的数据,用户要选择的角色*/
+    List<CheckBox> findObjects();
+
+    /**
+     * 更新角色信息,更具角色id
+     * @param entity
+     * @return
+     */
+    int updateObject(SysRole entity);
 }

@@ -1,5 +1,6 @@
 package com.db.sys.dao;
 
+import com.db.common.vo.CheckBox;
 import com.db.sys.entity.SysUser;
 import com.db.sys.vo.SysUserDeptVo;
 import org.apache.ibatis.annotations.Param;
@@ -38,4 +39,6 @@ public interface SysUserDao {
 
     /*新添加的用户入库*/
     int insertObject(SysUser entity);
+
+
 }

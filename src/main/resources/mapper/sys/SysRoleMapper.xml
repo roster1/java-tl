@@ -26,11 +26,12 @@
 	</select>
 
  	<!-- 删除角色，菜单的关系数据 -->
- 	<delete id="deleteObject" parameterType="int">
- 		delete
- 		from sys_roles
- 		where id = #{id}
- 	</delete>
+	<delete id="deleteObjectsByRoleId"
+			parameterType="int">
+         delete
+         from sys_role_menus
+         where role_id=#{roleId}
+    </delete>
 
 	<!--添加角色时,保存角色信息 useGeneratedKeys="true" 把新增加的主键赋值到自己定义的  keyProperty="id"(id)中
 	在Service层 entity.getId()为null 虽然数据能插入但是会报null,  ===>加入这两个参数才不会出现空指针异常
@@ -57,6 +58,30 @@
 		from sys_roles
 		where id=#{id}
 	</select>
+
+	<!--修改角色,将修改的角色信息入库-->
+	<update id="updateObject" parameterType="com.db.sys.entity.SysRole">
+		update sys_roles
+		<set>
+			<if test="name!=null and name!=''">
+				name=#{name},
+			</if>
+			<if test="note!=null and note!=''">
+				note=#{note},
+			</if>
+			<if test="modifiedUser!=null and modifiedUser!=''">
+				modifiedUser=#{modifiedUser},
+			</if>
+			modifiedTime=now()
+		</set>
+	</update>
+
+	<!--添加角色时,必须为用户分配角色,先提供用户可选择的角色-->
+	<select id="findObjects"
+			resultType="com.db.common.vo.CheckBox">
+           select id,name
+           from sys_roles
+    </select>
 </mapper>
 
 

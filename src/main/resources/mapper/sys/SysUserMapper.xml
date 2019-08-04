@@ -49,10 +49,10 @@
 				useGeneratedKeys="true"
 				keyProperty="id">
       insert into sys_users
-      (username,password,deptId,email,mobile,salt,valid,
+      (username,password,salt,email,mobile,valid,deptId,
       createdTime,modifiedTime,createdUser,modifiedUser)
       values
-    (#{username},#{password},#{deptId},#{email},#{mobile},#{salt},#{valid},
+    (#{username},#{password},#{salt},#{email},#{mobile},#{valid},#{deptId},
       now(),now(),#{createdUser},#{modifiedUser})
    </insert>
 </mapper>

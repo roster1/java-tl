@@ -11,15 +11,14 @@
 	</delete>
 
 	<!--添加用户时,基于用户id保存用户,角色的关系数据-->
-	<insert id="insertByUserId">
-		insert into
-		sys_user_roles
-		(user_id,role_id)
-		values
-		<foreach collection="roleIds" separator="," item="item">
-		(#{userId},#{item})
-		</foreach>
-	</insert>
+		<insert id="insertByUserId">
+			insert into sys_user_roles
+			(user_id,role_id)
+			values
+			<foreach collection="roleIds" separator="," item="item">
+				(#{userId},#{item})
+			</foreach>
+		</insert>
 </mapper>
 
 

@@ -7,11 +7,13 @@ import com.db.sys.entity.SysUser;
 import com.db.sys.service.SysUserService;
 import com.db.sys.vo.PageObject;
 import com.db.sys.vo.SysUserDeptVo;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SysUserServiceImpl implements SysUserService {
@@ -30,16 +32,15 @@ public class SysUserServiceImpl implements SysUserService {
         //3.计算startIndex
         int pageSize = 4;
         int startIndex = (pageCurrent-1)*pageSize;
-        //计算总页数
-        int pageCount = rows;
         //4.基于条件查询分页数据
         List<SysUserDeptVo> records = sysUserDao.findPageObjects(name,startIndex,pageSize);
         //5.封装数据PageObject,并返回
         PageObject<SysUserDeptVo> pageObject = new PageObject<>();
-        pageObject.setPageCount((rows-1)/(pageSize+1));
+        pageObject.setPageCount((rows-1)/pageSize+1);
         pageObject.setPageCurrent(pageCurrent);
         pageObject.setPageSize(pageSize);
         pageObject.setRecords(records);
+        pageObject.setRowCount(rows);
         return pageObject;
     }
 
@@ -71,6 +72,8 @@ public class SysUserServiceImpl implements SysUserService {
         return row;
     }
 
+    /*添加用户之前,将用户要选择的角色显示,供用户选择*/
+
     /**
      * 保存新添加的用户
      * @param sysUser
@@ -78,19 +81,33 @@ public class SysUserServiceImpl implements SysUserService {
      * @return
      */
     @Override
-    public int saveObject(SysUser sysUser, Integer[] roleIds) {
+    public int saveObject(SysUser entity, Integer[] roleIds) {
         //1.验证参数的合法性
-        if(sysUser == null)
+        if(entity == null)
             throw new IllegalArgumentException("对象不能为空");
-        if(StringUtils.isEmpty(sysUser.getUsername()))
+        if(StringUtils.isEmpty(entity.getUsername()))
             throw new IllegalArgumentException("用户名不能为空");
+        if(StringUtils.isEmpty(entity.getPassword()))
+            throw new ServiceException("用户的密码不能为空");
+        if(roleIds == null || roleIds.length == 0)
+            throw new ServiceException("必须为用户分配角色");
         //2.保存数据
         //2.1保存用户的数据
-        int row = sysUserDao.insertObject(sysUser);
+        String salt = UUID.randomUUID().toString();
+        entity.setSalt(salt);
+        SimpleHash sHash = new SimpleHash("MD5", entity.getPassword(), salt);
+        entity.setPassword(sHash.toHex());
+        int row = sysUserDao.insertObject(entity);
         if(row == 0)
             throw new ServiceException("保存失败");
         //2.2基于用户id保存用户,角色的关系数据
-        int count = sysUserRoleDao.insertByUserId(sysUser.getId(),roleIds);
+        int count = 0;
+        try {
+            count = sysUserRoleDao.insertByUserId(entity.getId(),roleIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("系统维护中...");
+        }
         if(count <=0)
             throw new ServiceException("保存失败");
         return row;

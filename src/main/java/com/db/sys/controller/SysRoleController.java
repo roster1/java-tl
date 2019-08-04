@@ -4,6 +4,7 @@ import com.db.sys.entity.SysRole;
 import com.db.sys.service.SysRoleService;
 import com.db.sys.vo.JsonResult;
 import com.db.sys.vo.PageObject;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -83,5 +84,21 @@ public class SysRoleController {
     @ResponseBody
     public JsonResult doFindObjectById(Integer id){
         return  new JsonResult(sysRoleService.findObjectById(id));
+    }
+    /*修改角色,将修改的角色信息保存*/
+    @RequestMapping("doUpdateObject")
+    @ResponseBody
+    public JsonResult doUpdateObject(SysRole entity,Integer[] menuIds){
+        sysRoleService.updateObject(entity,menuIds);
+        return  new JsonResult("update ok");
+    }
+
+
+    /*-------*/
+    /**添加用户时,提供可选择的角色*/
+    @RequestMapping("doFindRoles")
+    @ResponseBody
+    public JsonResult doFindObjects(){
+        return new JsonResult(sysRoleService.findObjects());
     }
 }
