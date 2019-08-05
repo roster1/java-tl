@@ -15,4 +15,10 @@ public class PageController {
 	  public String doPageUI() {
 		  return "common/page";
 	  }
+
+	  /**登录页面的呈现*/
+	  @RequestMapping("doLoginUI")
+	  public String doLoginUi(){
+	  	return  "login";
+	  }
 }

@@ -55,4 +55,43 @@
     (#{username},#{password},#{salt},#{email},#{mobile},#{valid},#{deptId},
       now(),now(),#{createdUser},#{modifiedUser})
    </insert>
+
+	<!--修改用户时,
+	1.将用户的数据回显 resultMap会引用sysUserMap ...parameterType="int" 2.修改的用户数据入库-->
+	<select id="findObjectById" resultMap="sysUserMap">
+		select *
+		from sys_users
+		where id=#{id}
+	</select>
+	<!--2.修改的用户数据入库-->
+	<update id="updateObject" parameterType="com.db.sys.entity.SysUser">
+		update sys_users
+		<set>
+			<if test="username!=null and username!=''">
+				username=#{username},
+			</if>
+			<if test="email!=null and email!=''">
+				email=#{email},
+			</if>
+			<if test="mobile!=null and mobile!=''">
+				mobile=#{mobile},
+			</if>
+			<if test="deptId!=null and deptId!=''">
+				deptId=#{deptId},
+			</if>
+
+			<if test="modifiedUser!=null and modifiedUser!=''">
+				modifiedUser=#{modifiedUser},
+			</if>
+			modifiedTime=now()
+		</set>
+		where id=#{id}
+	</update>
+
+	<!--用户的登录认证,查询用户的信息-->
+	<select id="findUserByUserName" resultType="com.db.sys.entity.SysUser">
+		select *
+		from sys_users
+		where username=#{username}
+	</select>
 </mapper>

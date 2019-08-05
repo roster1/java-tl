@@ -3,10 +3,15 @@ package com.db.sys.controller;
 import com.db.sys.entity.SysUser;
 import com.db.sys.service.SysUserService;
 import com.db.sys.vo.JsonResult;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user/")
@@ -66,4 +71,49 @@ public class SysUserController {
         return new JsonResult("save ok");
     }
 
+    /**
+     * 实现用户的修改
+     * 1.根据传过来的用户id,回显该用户数据
+     * 2.将修改的用户数据保存
+     * @param id
+     * @return
+     */
+    @RequestMapping("doFindObjectById")
+    @ResponseBody
+    public JsonResult doFindObjectById(Integer id){
+        Map<String, Object> map = sysUserService.findObjectById(id);
+        return  new JsonResult(map);
+    }
+    /**将修改的用户数据保存*/
+    @RequestMapping("doUpdateObject")
+    @ResponseBody
+    public JsonResult doUpdateObject(SysUser entity,Integer[] roleIds){
+        try {
+            sysUserService.updateObject(entity,roleIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  new JsonResult(e.getMessage());
+        }
+        return  new JsonResult("update ok");
+    }
+
+    /**用户登录时,将用户信息进行封装,并交给安全管理器,安全管理器
+     * 调用认证管理器时,会把token传递过去*/
+    @RequestMapping("doLogin")
+    @ResponseBody
+    public JsonResult doLogin(String username,String password){
+        //1.获取Subject对象
+        Subject subject = SecurityUtils.getSubject();
+        //1.1将用户的信息封装
+        UsernamePasswordToken upToken = new UsernamePasswordToken(username,password);
+        //1.2将封装的用户信息交给安全管理器
+        subject.login(upToken);
+        //分析:
+        //1)token会传给shiro的SecurityManager
+        //2)SecurityManager将token传递给认证管理器
+        //3)认证管理器会将token传递给realm
+        return  new JsonResult("login ok");
+    }
+
+    /**用户密码修改页面实现*/
 }

@@ -24,7 +24,39 @@
        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd">
-       
-       <context:component-scan base-package="com.db.sys.service"/>
-       <import resource="classpath:spring-shiro.xml"/>
+ 
+    <!-- 配置SecurityManager对象(shiro框架核心) -->
+    <bean id="securityManager"
+          class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+          <property name="Realm" ref="shiroUserRealm"/>
+    </bean>
+    <!-- 配置ShiroFilterFactoryBean对象
+    配置中第二个property表示为shiroFilterFactorybean的LoginUrl属性注入值.
+    <entry key="/doLogout.do" value="logout"/>退出的配置,会自动跳转登录的页面-->
+    <bean id="shiroFilterFactory"
+          class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+          <property name="SecurityManager" ref="securityManager"/>
+          <property name="LoginUrl" value="/doLoginUI.do"/>
+          <property name="FilterChainDefinitionMap">
+               <map>
+                 <entry key="/bower_components/**" value="anon"/>
+                 <entry key="/build/**" value="anon"/>
+                 <entry key="/dist/**" value="anon"/>
+                 <entry key="/plugins/**" value="anon"/>
+                 <entry key="/user/doLogin.do" value="anon"/>
+                 <entry key="/doLogout.do" value="logout"/>
+                 <entry key="/**" value="authc"/>
+               </map>
+          </property>
+    </bean>
+           
 </beans>
+
+
+
+
+
+
+
+
+

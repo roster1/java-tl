@@ -40,5 +40,12 @@ public interface SysUserDao {
     /*新添加的用户入库*/
     int insertObject(SysUser entity);
 
+    /*修改用户时,
+    1.将用户的数据回显 2.将修改的用户数据入库*/
+    SysUserDeptVo findObjectById(Integer id);
+    /*2.将修改的用户数据入库*/
+    int updateObject(SysUser user);
 
+    /*用户的登录认证,查询用户的信息*/
+    SysUser findUserByUserName(String username);
 }

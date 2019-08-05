@@ -19,6 +19,15 @@
 				(#{userId},#{item})
 			</foreach>
 		</insert>
+
+
+
+	<!--修改用户时,-->
+	<select id="findRoleIdsByUserId" resultType="int">
+		select role_id
+		from sys_user_roles
+		where role_id=#{id}
+	</select>
 </mapper>
 
 

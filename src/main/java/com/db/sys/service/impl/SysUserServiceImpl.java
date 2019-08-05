@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -111,5 +113,43 @@ public class SysUserServiceImpl implements SysUserService {
         if(count <=0)
             throw new ServiceException("保存失败");
         return row;
+    }
+
+    /**
+     * 修改用户
+     * 1.回显要修改的用户
+     *
+     * 2.修改的用户入库
+     * @param id
+     * @return
+     */
+    @Override
+    public Map<String,Object> findObjectById(Integer id) {
+        if(id == null || id<=0)
+            throw new IllegalArgumentException("传入的id无效,id:"+id);
+        //查询数据
+        SysUserDeptVo user = sysUserDao.findObjectById(id);
+        if(user == null)
+            throw new ServiceException("该用户不存在");
+        List<Integer> roleIds = sysUserRoleDao.findRoleIdsByUserId(id);
+        //封装数据并返回
+        Map<String, Object> map = new HashMap<>();
+        map.put("user",user);
+        map.put("roleIds",roleIds);
+        return map;
+    }
+    /**2.将修改的用户数据入库*/
+    @Override
+    public int updateObject(SysUser entity, Integer[] roleIds) {
+        if(entity == null)
+            throw new IllegalArgumentException("对象不能为空");
+        if(StringUtils.isEmpty(entity.getUsername()))
+            throw new ServiceException("用户名不能为空");
+        int row = sysUserDao.updateObject(entity);
+        if(roleIds.length == 0)
+            throw new ServiceException("必须为用户分配角色");
+        sysUserRoleDao.deleteObjectsByRoleId(entity.getId());
+        sysUserRoleDao.insertByUserId(entity.getId(),roleIds);
+        return row ;
     }
 }

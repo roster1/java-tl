@@ -5,6 +5,7 @@ import com.db.sys.vo.PageObject;
 import com.db.sys.vo.SysUserDeptVo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SysUserService {
 
@@ -15,4 +16,9 @@ public interface SysUserService {
 
     /*保存添加的用户*/
     int saveObject(SysUser sysUser, Integer[] roleIds);
+
+    /*修改用户时,1.根据id回显要修改的用户*/
+    Map<String,Object> findObjectById(Integer id);
+    /*2.将修改的用户保存*/
+    int updateObject(SysUser entity, Integer[] roleIds);
 }
