@@ -58,7 +58,7 @@
 
 	<!--修改用户时,
 	1.将用户的数据回显 resultMap会引用sysUserMap ...parameterType="int" 2.修改的用户数据入库-->
-	<select id="findObjectById" resultMap="sysUserMap">
+	<select id="findObjectById" parameterType="int" resultMap="sysUserMap">
 		select *
 		from sys_users
 		where id=#{id}

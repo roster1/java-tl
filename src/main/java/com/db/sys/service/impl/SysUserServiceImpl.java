@@ -78,7 +78,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     /**
      * 保存新添加的用户
-     * @param sysUser
+     * @param entity
      * @param roleIds
      * @return
      */
@@ -148,7 +148,8 @@ public class SysUserServiceImpl implements SysUserService {
         int row = sysUserDao.updateObject(entity);
         if(roleIds.length == 0)
             throw new ServiceException("必须为用户分配角色");
-        sysUserRoleDao.deleteObjectsByRoleId(entity.getId());
+        //修改用户时先删除用户和角色的关系
+        sysUserRoleDao.deleteObjectsByUserId(entity.getId());
         sysUserRoleDao.insertByUserId(entity.getId(),roleIds);
         return row ;
     }

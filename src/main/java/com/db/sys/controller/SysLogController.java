@@ -30,7 +30,13 @@ public class SysLogController {
 	  public JsonResult doFindPageObjects(
 			  Integer pageCurrent,
 			  String username) {
-		  PageObject<SysLog> pageObject = sysLogService.findPageObjects(username, pageCurrent);
+		 PageObject<SysLog> pageObject = null;
+		 try {
+			 pageObject = sysLogService.findPageObjects(username, pageCurrent);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+			 return  new JsonResult(e.getMessage());
+		 }
 		 return new JsonResult(pageObject);
 	  }
 	 /**

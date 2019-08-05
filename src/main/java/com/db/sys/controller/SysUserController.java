@@ -4,6 +4,7 @@ import com.db.sys.entity.SysUser;
 import com.db.sys.service.SysUserService;
 import com.db.sys.vo.JsonResult;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,17 +102,25 @@ public class SysUserController {
      * 调用认证管理器时,会把token传递过去*/
     @RequestMapping("doLogin")
     @ResponseBody
-    public JsonResult doLogin(String username,String password){
-        //1.获取Subject对象
-        Subject subject = SecurityUtils.getSubject();
-        //1.1将用户的信息封装
-        UsernamePasswordToken upToken = new UsernamePasswordToken(username,password);
-        //1.2将封装的用户信息交给安全管理器
-        subject.login(upToken);
-        //分析:
-        //1)token会传给shiro的SecurityManager
-        //2)SecurityManager将token传递给认证管理器
-        //3)认证管理器会将token传递给realm
+    public JsonResult doLogin(boolean isRememberMe,String username,String password){
+        try {
+            //1.获取Subject对象
+            Subject subject = SecurityUtils.getSubject();
+            //1.1将用户的信息封装
+            UsernamePasswordToken upToken = new UsernamePasswordToken(username,password);
+            //实现记住我
+            if(isRememberMe)
+                upToken.setRememberMe(true);
+            //1.2将封装的用户信息交给安全管理器
+            subject.login(upToken);
+            //分析:
+            //1)token会传给shiro的SecurityManager
+            //2)SecurityManager将token传递给认证管理器
+            //3)认证管理器会将token传递给realm
+        } catch (AuthenticationException e) {
+            e.printStackTrace();
+            return new JsonResult("用户名或密码错误");
+        }
         return  new JsonResult("login ok");
     }
 

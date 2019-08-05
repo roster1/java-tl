@@ -2,6 +2,8 @@ package com.db.sys.dao;
 
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface SysRoleMenuDao {
 	/**
 	 * 根据菜单id删除菜单和角色的关系数据
@@ -10,11 +12,7 @@ public interface SysRoleMenuDao {
 	 */
 	int deleteObjectsByMenuId(Integer menuId);
 
-	/**
-	 *
-	 * @param RoleId
-	 * @return
-	 */
+	/*删除角色时,通过角色id删除,角色,菜单的关系数据*/
 	int deleteObjectsByRoleId(Integer RoleId);
 
 	/**
@@ -24,4 +22,8 @@ public interface SysRoleMenuDao {
 	 * @return
 	 */
 	int insertObjects(@Param("roleId") int roleId,@Param("menuIds")Integer[] menuIds);
+
+	/*授权实现,基于角色id获取菜单id*/
+	List<Integer> findMenuIdsByRoleIds(
+			@Param("roleIds")Integer[] roleIds);
 }

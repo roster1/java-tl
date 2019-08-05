@@ -2,6 +2,7 @@ package com.db.sys.dao;
 
 import com.db.common.vo.Node;
 import com.db.sys.entity.SysMenu;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -37,4 +38,9 @@ public interface SysMenuDao {
 	 * @return
 	 */
 	int updateObject(SysMenu sysMenu);
+
+	/*授权实现,基于菜单id,查找权限标识*/
+	List<String> findPermissions(
+			@Param("menuIds")
+					Integer[] menuIds);
 }

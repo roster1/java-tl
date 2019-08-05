@@ -28,12 +28,24 @@
 		</foreach>
 	</insert>
 
-	<!--修改角色时,将角色关联的菜单id查找出来放到
+	<!--....修改角色时,将角色关联的菜单id查找出来放到
 	SysRoleMenuVo的map中-->
 	<select id="findMenuIdsByRoleId" resultType="int">
 		select menu_id
 		from sys_role_menus
 		where menu_id=#{id}
+	</select>
+
+	<!--////////////-->
+	<!---->
+	<select id="findMenuIdsByRoleIds" resultType="int">
+		select menu_id
+		from sys_role_menus
+		where role_id in
+		<foreach collection="roleIds" open="("
+				 separator="," close=")" item="item">
+			#{item}
+		</foreach>
 	</select>
 </mapper>
 

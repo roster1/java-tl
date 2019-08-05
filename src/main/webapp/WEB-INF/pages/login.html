@@ -85,7 +85,8 @@
   function doLogin(){
 	  var params={
 		 username:$("#usernameId").val(),
-		 password:$("#passwordId").val()
+		 password:$("#passwordId").val(),
+          isRememberMe:$("#rememberId").prop("checked"),
 	  }
 	  var url="user/doLogin.do";
 	  console.log("params",params);

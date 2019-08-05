@@ -63,6 +63,11 @@ public class SysRoleServiceImpl implements SysRoleService {
         return pageObject;
     }
 
+    /**
+     * 删除角色
+     * @param id
+     * @return
+     */
     @Override
     public int deleteObject(Integer id) {
         //id=0;//必须大于0

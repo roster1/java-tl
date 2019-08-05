@@ -3,6 +3,7 @@ package com.db.sys.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class SysLogServiceImpl implements SysLogService{
 	 * 查询
 	 */
 	@Override
+	@RequiresPermissions("sys:user:valid")
 	public PageObject<SysLog> findPageObjects(String username, Integer currentPage) {
 		if(currentPage < 1 || currentPage == null) {
 			throw new IllegalArgumentException("页数不能小于1");

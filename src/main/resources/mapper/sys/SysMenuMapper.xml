@@ -64,6 +64,20 @@
            modifiedTime=now()
         where id=#{id}
 	</update>
+
+	<!--授权实现-->
+	<!--基于菜单id查询 权限标识 resultType="string" 没有会
+	报It's likely that neither a Result Type nor a Result Map was specified-->
+	<select id="findPermissions" resultType="string">
+		select permission
+		from sys_menus
+		where id in
+		<foreach collection="menuIds" open="("
+						separator="," close=")" item="item">
+			#{item}
+		</foreach>
+
+	</select>
 </mapper>
 
 
