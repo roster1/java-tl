@@ -40,7 +40,7 @@ public class SysLogAspect {
     * 2)bean(bean表达式)例如bean(*ServiceImpl)
    */
    @Pointcut("bean(sysUserServiceImpl)")
-   //@Pointcut("@annoation(com.db.common.annotation.RequiedLog)")
+//   @Pointcut("@annoation(com.db.common.annotation.RequiedLog)")
    public void doLog() {}
    /**
     * @Around 此注解描述的方法为一个通知，这个

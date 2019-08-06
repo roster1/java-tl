@@ -11,7 +11,7 @@ import com.db.sys.entity.SysLog;
 public interface SysLogDao {
 	/**
 	 * 基于id删除日志信息
-	 * @param id
+	 * @param ids
 	 * @return
 	 */
 	int deleteObjects(

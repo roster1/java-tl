@@ -1,5 +1,6 @@
 package com.db.sys.service.impl;
 
+import com.db.common.annotation.RequiedLog;
 import com.db.common.exception.ServiceException;
 import com.db.sys.dao.SysUserDao;
 import com.db.sys.dao.SysUserRoleDao;
@@ -7,6 +8,7 @@ import com.db.sys.entity.SysUser;
 import com.db.sys.service.SysUserService;
 import com.db.sys.vo.PageObject;
 import com.db.sys.vo.SysUserDeptVo;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +55,8 @@ public class SysUserServiceImpl implements SysUserService {
      * @param modifiedUser
      * @return
      */
+    @RequiedLog("禁用启用")
+    @RequiresPermissions("sys:user:valid")
     @Override
     public int validById(Integer id, Integer valid, String modifiedUser) {
         if(id == null || id<=0)
